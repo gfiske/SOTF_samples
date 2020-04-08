@@ -1,820 +1,152 @@
-
-
-
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.js"></script>
-<style type="text/css">
-    .info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-.info h4 {
-    margin: 0 0 5px;
-    color: #777;
-}
-.legend {
-    line-height: 18px;
-    color: #555;
-}
-.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
-}
-.legend .circle {
-  border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  margin-top: 8px;
-}
-</style>
 
-<title>SOTF Map</title>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SOTF sample locations</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css" rel="stylesheet" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js'></script>
+    <link rel="stylesheet" href="style.css">
 
-<script type='text/javascript'>//<![CDATA[
-$(window).load(function(){
-//leaflet SOTF map (with legend)
-
-var myColor = "#0a60c3"
-
-var geojson = {
-   "type": "FeatureCollection",
-   "features": [
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -162.8687,61.9358 ]
-    },
-    "properties": {
-    "id":1,
-    "River":"Yukon",
-    "SiteCode":"",
-    "Town":"Pilot Station",
-    "StateCountry":"Alaska",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"YRITWC",
-    "Funding":"NSF AVDF",
-    "Start Date":2003
+  </head>
+  <style>
+    body {
+      background: #404040;
+      margin: 0;
+      padding: 0;
     }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -133.7253,67.4544 ]
-    },
-    "properties": {
-    "id":2,
-    "River":"Mackenzie",
-    "SiteCode":"",
-    "Town":"Tsiigehtchic",
-    "StateCountry":"NWT, Canada",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"Aurora Institute",
-    "Funding":"NSF",
-    "Start Date":2003
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ 66.4699,66.539 ]
-    },
-    "properties": {
-    "id":3,
-    "River":"Ob",
-    "SiteCode":"",
-    "Town":"Salekhard",
-    "StateCountry":"Russia",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"CPPI-S",
-    "Funding":"NSF",
-    "Start Date":2003
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ 86.1287,69.3841 ]
-    },
-    "properties": {
-    "id":4,
-    "River":"Yenisey",
-    "SiteCode":"",
-    "Town":"Dudinka",
-    "StateCountry":"Russia",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"CPPI-S",
-    "Funding":"NSF",
-    "Start Date":2003
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ 123.4224,66.7704 ]
-    },
-    "properties": {
-    "id":5,
-    "River":"Lena",
-    "SiteCode":"",
-    "Town":"Zhigansk",
-    "StateCountry":"Sakha Republic, Russia",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"CPPI-S",
-    "Funding":"NSF AVDF",
-    "Start Date":2003
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ 161.2807,68.7499 ]
-    },
-    "properties": {
-    "id":6,
-    "River":"Kolmya",
-    "SiteCode":"",
-    "Town":"Cherskiy",
-    "StateCountry":"Sakha Republic, Russia",
-    "Project":"Arctic Great Rivers Observatory",
-    "Partners":"Northeast Science Station",
-    "Funding":"NSF",
-    "Start Date":2003
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ 15.2366,-4.3174 ]
-    },
-    "properties": {
-    "id":7,
-    "River":"Congo",
-    "SiteCode":"",
-    "Town":"Brazzaville",
-    "StateCountry":"Republic of Congo",
-    "Project":"Global Rivers Observatory",
-    "Partners":"Ministry of Natural Resources",
-    "Funding":"Harbourton AVDF",
-    "Start Date":2010
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -55.5248,-1.9219 ]
-    },
-    "properties": {
-    "id":8,
-    "River":"Amazon",
-    "SiteCode":"",
-    "Town":"Obidos",
-    "StateCountry":"Brazil",
-    "Project":"Global Rivers Observatory",
-    "Partners":"UFOPA",
-    "Funding":"Harbourton AVDF",
-    "Start Date":2011
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.5077,41.5923 ]
-    },
-    "properties": {
-    "id":9,
-    "River":"Quashet",
-    "SiteCode":"QR-1",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.5726,41.5852 ]
-    },
-    "properties": {
-    "id":10,
-    "River":"Coonamessett",
-    "SiteCode":"CR-1",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.6286,41.6241 ]
-    },
-    "properties": {
-    "id":11,
-    "River":"Herring River",
-    "SiteCode":"HR-1",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.4823,41.6419 ]
-    },
-    "properties": {
-    "id":12,
-    "River":"Mashpee",
-    "SiteCode":"MR-2",
-    "Town":"Mashpee",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.6358,41.7679 ]
-    },
-    "properties": {
-    "id":13,
-    "River":"Red Brook",
-    "SiteCode":"RB-1",
-    "Town":"Wareham",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.4524,41.6383 ]
-    },
-    "properties": {
-    "id":14,
-    "River":"Santuit",
-    "SiteCode":"SR-1",
-    "Town":"Mashpee",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2016
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.4139,41.6525 ]
-    },
-    "properties": {
-    "id":15,
-    "River":"Marston Mill",
-    "SiteCode":"MM-1",
-    "Town":"Mashpee",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2017
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.7633,41.7785 ]
-    },
-    "properties": {
-    "id":16,
-    "River":"Weaweantic",
-    "SiteCode":"WR-1",
-    "Town":"Wareham",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2018
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.6063,41.6968 ]
-    },
-    "properties": {
-    "id":17,
-    "River":"Pocasset",
-    "SiteCode":"PR-1",
-    "Town":"Bourne",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2018
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.525225,41.58921 ]
-    },
-    "properties": {
-    "id":18,
-    "River":"Childs",
-    "SiteCode":"CH-1 CH-R9",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2018
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.628801,41.621571 ]
-    },
-    "properties": {
-    "id":19,
-    "River":"Trout Brook",
-    "SiteCode":"TB-1",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Cape Cod Rivers Observatory",
-    "Partners":"",
-    "Funding":"AVDF Horizon",
-    "Start Date":2018
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -159.1163,61.1883 ]
-    },
-    "properties": {
-    "id":6,
-    "River":"Aniak",
-    "SiteCode":"",
-    "Town":"",
-    "StateCountry":"Alaska",
-    "Project":"Science on the Fly",
-    "Partners":"USFWS Papa Bear Adventures",
-    "Funding":"",
-    "Start Date":2020
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.80668,37.93603 ]
-    },
-    "properties": {
-    "id":8,
-    "River":"San Miguel",
-    "SiteCode":"",
-    "Town":"Telluride",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.89388,37.94588 ]
-    },
-    "properties": {
-    "id":9,
-    "River":"San Miguel",
-    "SiteCode":"",
-    "Town":"Telluride",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -108.11077,38.03106 ]
-    },
-    "properties": {
-    "id":10,
-    "River":"San Miguel",
-    "SiteCode":"",
-    "Town":"Placerville",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.89833,37.93851 ]
-    },
-    "properties": {
-    "id":11,
-    "River":"South Fork",
-    "SiteCode":"",
-    "Town":"Telluride",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.87369,37.86356 ]
-    },
-    "properties": {
-    "id":12,
-    "River":"Howard Fork",
-    "SiteCode":"",
-    "Town":"Ames",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.88562,37.86032 ]
-    },
-    "properties": {
-    "id":14,
-    "River":"Lake Fork",
-    "SiteCode":"",
-    "Town":"Ames",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -107.88082,37.81869 ]
-    },
-    "properties": {
-    "id":15,
-    "River":"Lake Fork",
-    "SiteCode":"",
-    "Town":"Trout Lake",
-    "StateCountry":"Colorado",
-    "Project":"Science on the Fly",
-    "Partners":"Telluride Angler",
-    "Funding":"Patagonia",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.522752,41.607222 ]
-    },
-    "properties": {
-    "id":16,
-    "River":"Childs River",
-    "SiteCode":"CH-R1",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.522894,41.605506 ]
-    },
-    "properties": {
-    "id":17,
-    "River":"Childs River",
-    "SiteCode":"CH-R2",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.522666,41.605535 ]
-    },
-    "properties": {
-    "id":18,
-    "River":"Childs River",
-    "SiteCode":"CH-R3",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.523065,41.604921 ]
-    },
-    "properties": {
-    "id":19,
-    "River":"Childs River",
-    "SiteCode":"CH-R4",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.525084,41.600114 ]
-    },
-    "properties": {
-    "id":20,
-    "River":"Childs River",
-    "SiteCode":"CH-R5",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.525019,41.597727 ]
-    },
-    "properties": {
-    "id":21,
-    "River":"Childs River",
-    "SiteCode":"CH-R6",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.525195,41.596144 ]
-    },
-    "properties": {
-    "id":22,
-    "River":"Childs River",
-    "SiteCode":"CH-R7",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.524642,41.591911 ]
-    },
-    "properties": {
-    "id":23,
-    "River":"Childs River",
-    "SiteCode":"CH-R8",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -70.525225,41.58921 ]
-    },
-    "properties": {
-    "id":24,
-    "River":"Childs River",
-    "SiteCode":"CH-R9 (CH-1)",
-    "Town":"Falmouth",
-    "StateCountry":"Massachusetts",
-    "Project":"Science on the Fly",
-    "Partners":"",
-    "Funding":"",
-    "Start Date":2019
-    }
-  },
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -122.7221,42.2257 ]
-    },
-    "properties": {
-    "id":25,
-    "River":"Bear Creek",
-    "SiteCode":"",
-    "Town":"Ashland",
-    "StateCountry":"Oregon",
-    "Project":"Science on the Fly",
-    "Partners":"Fly Water Travel Jesse Robbins",
-    "Funding":"",
-    "Start Date":2020
-    }
-  }
-],
-	"name": "Points",
-	"keyField": "River"
-};
 
 
-geojsonLayer = L.geoJson(geojson, {
-  style: function(feature) {
-    return {
-      color: myColor
-    };
-  },
-  pointToLayer: function(feature, latlng) {
-    return new L.CircleMarker(latlng, {
-      radius: 7,
-      fillOpacity: 0.75
-    });
-  },
-  onEachFeature: function(feature, layer) {
-    layer.bindPopup('<h1>'+feature.properties.Town+
-	'</h1><p>In an effort to reduce the spread of Coronavirus and to protect the health and safety of our employees, we are transitioning many of our customer service representatives to work from home, which has contributed to longer wait times. You can try asking another question or using one of our digital options below. Thank you for your patience and understanding as we prioritize the most urgent issues, such as loss of service.</p>'+
-	//				'</h1><p>River: '+feature.properties.River+
-	//				'<br>StateCountry: '+feature.properties.StateCountry+
-	//				'<br>SiteCode: '+feature.properties.SiteCode+
-	//				'<br>Project: '+feature.properties.Project+
-	//				'<br>Partners: '+feature.properties.Partners+
-	//				'<br>Funding: '+feature.properties.Funding+
-	//				'<br>Start Date: '+feature.properties.StartDate+
-					'<br>Example Link: <a href="https://chiton-guppy-8mne.squarespace.com/">Visit SOTF</a>'
-					);
-	//layer.bindTooltip(feature.properties.River, {opacity:0.8});
+    #map {
+      border-left: 1px solid #fff;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      bottom: 0;
     }
-});
 
 
+    .mapboxgl-popup {
+      padding-bottom: 5px;
+    }
 
-var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-  '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-  'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-  mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+    .mapboxgl-popup-close-button {
+      display: none;
+    }
+
+    .mapboxgl-popup-content {
+      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      padding: 0;
+      width: 250px;
+    }
+
+    .mapboxgl-popup-content-wrapper {
+      padding: 1%;
+    }
+
+    .mapboxgl-popup-content h3 {
+      background: rgb(61, 59, 59);
+      text-align: center;
+      color: #fff;
+      margin: 0;
+      display: block;
+      padding: 15px;
+      font-weight: 700;
+      margin-top: -5px;
+    }
+
+    .mapboxgl-popup-content h4 {
+      margin: 0;
+      display: block;
+      padding: 10px 3px 10px 10px;
+      font-weight: 400;
+    }
+
+    .mapboxgl-container {
+      cursor: pointer;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+      margin-top: 3px;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
+      border-bottom-color: rgb(61, 59, 59);
+    }
+
+  </style>
+
+  <body>
+
+    <div id="map"></div>
+    <script>
+      var transformRequest = (url, resourceType) => {
+        var isMapboxRequest =
+          url.slice(8, 22) === "api.mapbox.com" ||
+          url.slice(10, 26) === "tiles.mapbox.com";
+        return {
+          url: isMapboxRequest
+            ? url.replace("?", "?pluginName=sheetMapper&")
+            : url
+        };
+      };
+
+      //YOUR TURN: add your Mapbox access token 
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: "mapbox://styles/mapbox/streets-v11", //YOUR TURN: choose a style: https://docs.mapbox.com/api/maps/#styles
+        center: [-106.6715742,38.9947059], // starting position [lng, lat]
+        zoom: 7, // starting zoom
+        transformRequest: transformRequest
+      });
 
 
+      map.on("load", function() {
+        init();
+      });
 
-var grayscale = L.tileLayer(mbUrl, {
-    id: 'mapbox.light',
-    attribution: mbAttr
-  }),
-  streets = L.tileLayer(mbUrl, {
-    id: 'mapbox.streets',
-    attribution: mbAttr
-  }),
-   sat = L.tileLayer(mbUrl, {
-    id: 'mapbox.satellite',
-    attribution: mbAttr
-  });
-
-var mymap = L.map('mapid', {
-  center: [40, 0],
-  zoom: 3,
-  scrollWheelZoom: true,
-  layers: [grayscale, geojsonLayer]
-});
-
-var baseLayers = {
-  "Grayscale": grayscale,
-  "Streets": streets,
-  "Satellite": sat
-};
-
-var overlays = {
-  "Rivers": geojsonLayer
-};
-
-L.control.layers(baseLayers, overlays).addTo(mymap);
+      // Initialize Tabletop to access your table
+      function init() {
+        Tabletop.init({
+          // YOUR TURN: change 'key' value to point to your spreadsheet
+          key: 'https://docs.google.com/spreadsheets/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/edit?usp=sharing',
+          // once Tabletop has loaded the data, it passes it to the 'callback' function, 'addPoints', defined below
+          callback: addPoints,
+          simpleSheet: true
+        });
+      }
 
 
+      // create a function called addPoints that iterates through your table (row by row) to create markers and popups
+      function addPoints(data) {
+
+        // iterate through your table to set the marker to lat/long values for each row
+
+        data.forEach(function(row) {
+
+          // create a variable for your popup and populate your popup with information from your table
+          var popup = new mapboxgl.Popup()
+            .setHTML(`<h3>` + row.River + `</h3>` + '<h4>' + '<b>' + 'Site Code: ' + '</b>' + row.SiteCode + '</h4>' + '<h4>' + '<b>' + 'Project: ' + '</b>' + row.Project + '</h4>'); // use the table to populate your popup with text
 
 
-$(window).on("resize", function() {
-  $("#mapid").height($(window).height()).width($(window).width());
-  mymap.invalidateSize();
-}).trigger("resize");
+          // create a variable for your markup and add it to the map 
+          var marker = new mapboxgl.Marker({
+              color: 'purple'
+            })
+            .setLngLat([row.Longitude, row.Latitude])
+            .setPopup(popup)
+            .addTo(map); // add the marker to the map
 
-});//]]>
 
-</script>
-</head>
-<body>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-<div id='mapid'></div>
+        });
+      }
 
-<script>
-  // tell the embed parent frame the height of the content
-  if (window.parent && window.parent.parent){
-    window.parent.parent.postMessage(["resultsFrame", {
-      height: document.body.getBoundingClientRect().height,
-      slug: "ksx600sn"
-    }], "*")
-  }
-</script>
-</body>
+    </script>
+  </body>
+
 </html>
