@@ -77,6 +77,7 @@
       border-bottom-color: rgb(61, 59, 59);
     }
 
+
   </style>
 
   <body>
@@ -94,11 +95,11 @@
         };
       };
 
-      //YOUR TURN: add your Mapbox access token 
+      //add Mapbox access token 
       mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
       var map = new mapboxgl.Map({
         container: 'map', // container id
-        style: "mapbox://styles/mapbox/outdoors-v11", //YOUR TURN: choose a style: https://docs.mapbox.com/api/maps/#styles
+        style: "mapbox://styles/gfiske-whrc/ck8t8pos9039n1imxvdmrp5jl", 
         center: [-107.8366297,37.940174], // starting position [lng, lat]
         zoom: 9, // starting zoom
         transformRequest: transformRequest
@@ -112,7 +113,7 @@
       // Initialize Tabletop to access your table
       function init() {
         Tabletop.init({
-          // YOUR TURN: change 'key' value to point to your spreadsheet
+          // key to spreadsheet
           key: 'https://docs.google.com/spreadsheets/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/edit?usp=sharing',
           // once Tabletop has loaded the data, it passes it to the 'callback' function, 'addPoints', defined below
           callback: addPoints,
@@ -130,7 +131,7 @@
 
           // create a variable for your popup and populate your popup with information from your table
           var popup = new mapboxgl.Popup()
-            .setHTML('<h3>' + row.River + '</h3>' + '<h4>' + '<b>' + ' ' + row.Description + '</b>' + '</h4>' + '<h4>' + '<b>' + 'Project: ' + '</b>' + row.Project + '</h4>');
+            .setHTML('<h3>' + row.River + '</h3>' + '<h4>' + '<b>' + ' ' + row.Description + '</b>' + '</h4>' + '<h4>' + '<b>' + 'Project: ' + '</b>' + row.Project + '</h4>'); // use the table to populate your popup with text
 
 
           // create a variable for your markup and add it to the map 
@@ -149,4 +150,5 @@
   </body>
 
 </html>
+
 
