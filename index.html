@@ -40,11 +40,12 @@
     }
 
     .mapboxgl-popup-close-button {
-      display: none;
+      display: true;
     }
 
     .mapboxgl-popup-content {
-      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      //font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+	  font: 400 14px/22px 'Arial', 'Helvetica', 'sans-serif';
       padding: 0;
       width: 250px;
     }
@@ -148,9 +149,6 @@
 		}
 
 
-
-
-
       // create a function called addPoints that iterates through your table (row by row) to create markers and popups
       function addPoints(data) {
 
@@ -167,7 +165,7 @@
           var marker = new mapboxgl.Marker({
               color: 'blue'
             })
-            .setLngLat([row.Longitude, row.Latitude])
+			.setLngLat([row.Longitude, row.Latitude])
             .setPopup(popup)
             .addTo(map); // add the marker to the map
 
