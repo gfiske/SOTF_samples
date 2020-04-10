@@ -19,6 +19,12 @@
       padding: 0;
     }
 
+	#menu {
+	position: absolute;
+	background: #fff;
+	padding: 10px;
+	font-family: 'Open Sans', sans-serif;
+	}
 
     #map {
       border-left: 1px solid #fff;
@@ -83,6 +89,12 @@
   <body>
 
     <div id="map"></div>
+	<div id="menu">
+	<input id="gfiske-whrc/ck8t8pos9039n1imxvdmrp5jl"	type="radio" name="rtoggle"	value="custom"	checked="checked"/>
+	<label for="custom">SOTF basemap</label>
+	<input id="mapbox/satellite-v9" type="radio" name="rtoggle" value="satellite" />
+	<label for="satellite">satellite</label>
+	</div>
     <script>
       var transformRequest = (url, resourceType) => {
         var isMapboxRequest =
@@ -100,8 +112,9 @@
       var map = new mapboxgl.Map({
         container: 'map', // container id
         style: "mapbox://styles/gfiske-whrc/ck8t8pos9039n1imxvdmrp5jl", 
-        center: [-107.8366297,37.940174], // starting position [lng, lat]
-        zoom: 9, // starting zoom
+		//style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-95.8366297,37.940174], // starting position [lng, lat]
+        zoom: 4, // starting zoom
         transformRequest: transformRequest
       });
 
@@ -120,6 +133,22 @@
           simpleSheet: true
         });
       }
+
+
+		var layerList = document.getElementById('menu');
+		var inputs = layerList.getElementsByTagName('input');
+		 
+		function switchLayer(layer) {
+		var layerId = layer.target.id;
+		map.setStyle('mapbox://styles/' + layerId);
+		}
+		 
+		for (var i = 0; i < inputs.length; i++) {
+		inputs[i].onclick = switchLayer;
+		}
+
+
+
 
 
       // create a function called addPoints that iterates through your table (row by row) to create markers and popups
@@ -150,5 +179,4 @@
   </body>
 
 </html>
-
 
