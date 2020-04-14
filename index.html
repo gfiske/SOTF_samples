@@ -17,7 +17,7 @@
       background: #404040;
       margin: 0;
       padding: 0;
-      overflow-x: hidden; /* Hide horizontal scrollbar */
+	  overflow-x: hidden; /* Hide horizontal scrollbar */
     }
 
 	#menu {
@@ -89,6 +89,7 @@
   </style>
 
   <body>
+  
 
     <div id="map"></div>
 	<div id="menu">
@@ -96,6 +97,8 @@
 	<label for="custom">SOTF basemap</label>
 	<input id="mapbox/satellite-v9" type="radio" name="rtoggle" value="satellite" />
 	<label for="satellite">satellite</label>
+	<input id="mapbox/dark-v10" type="radio" name="rtoggle" value="satellite" />
+	<label for="dark">dark</label>
 	</div>
     <script>
       var transformRequest = (url, resourceType) => {
@@ -164,7 +167,7 @@
 
           // create a variable for your markup and add it to the map 
           var marker = new mapboxgl.Marker({
-              color: 'blue'
+              color: '#0000cc'
             })
 			.setLngLat([row.Longitude, row.Latitude])
             .setPopup(popup)
