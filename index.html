@@ -22,19 +22,19 @@
     }
 
     #menu {
-        position: fixed;
-        z-index: 1;
-        left: 2%;
-        top: 3%;
-        border-radius: 30px;
-        width: 350px;
-        font-family: "Trebuchet MS", Helvetica, sans-serif;
-        color: #bfbfbf;
-        text-transform: uppercase;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    
+         position: fixed;
+         z-index: 1;
+         left: 2%;
+         top: 3%;
+         border-radius: 30px;
+         width: 350px;
+         font-family: "Trebuchet MS", Helvetica, sans-serif;
+         color: #bfbfbf;
+         text-transform: uppercase;
+         font-size: 12px;
+         font-weight: bold;
+     }
+
     #map {
       border-left: 0px solid #fff;
       position: absolute;
@@ -105,9 +105,9 @@
       <label for="satellite">satellite</label>
       <input id="gfiske-whrc/ck8t8pos9039n1imxvdmrp5jl" type="radio" name="rtoggle" value="custom" />
       <label for="custom">topography</label>
-      <input id="mapbox/dark-v10" type="radio" name="rtoggle" value="satellite" checked="checked" />
+      <input id="mapbox/dark-v10" type="radio" name="rtoggle" value="dark" checked="checked" />
       <label for="dark">dark</label>
-      <input id="mapbox/navigation-guidance-night-v4" type="radio" name="rtoggle" value="navigation" />
+      <input id="mapbox/navigation-guidance-night-v4" type="radio" name="rtoggle" value="night" />
       <label for="nav">navigate</label>
     </div>
 
@@ -118,8 +118,11 @@ var map = new mapboxgl.Map({
   //style: "mapbox://styles/mapbox/satellite-v9", // satellite
   style: "mapbox://styles/mapbox/dark-v10", // dark
   center: [-110, 30.0], // starting position
-  zoom: 2 // starting zoom
+  zoom: 2, // starting zoom
+  attributionControl: false,
+  showLogoBug: true
 });
+
 
 // Add zoom and rotation controls to the map.
 //map.addControl(new mapboxgl.NavigationControl());
