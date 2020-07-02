@@ -132,7 +132,7 @@ var map = new mapboxgl.Map({
 $(document).ready(function() {
   $.ajax({
     type: "GET",
-    url: 'https://docs.google.com/spreadsheets/u/0/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/export?format=csv&id=1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q&gid=0',
+    url: 'https://docs.google.com/spreadsheets/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/gviz/tq?tqx=out:csv&sheet=Sheet1',
     dataType: "text",
     success: function(csvData) {
       makeGeoJSON(csvData);
