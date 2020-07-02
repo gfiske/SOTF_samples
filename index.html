@@ -115,173 +115,175 @@
 
     <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
-var map = new mapboxgl.Map({
-  container: 'map', // container id
-  //style: "mapbox://styles/mapbox/satellite-v9", // satellite
-  style: "mapbox://styles/mapbox/dark-v10", // dark
-  center: [-110, 30.0], // starting position
-  zoom: 2, // starting zoom
-  attributionControl: false,
-  showLogoBug: true
-});
-
-
-// Add zoom and rotation controls to the map.
-//map.addControl(new mapboxgl.NavigationControl());
-
-$(document).ready(function() {
-  $.ajax({
-    type: "GET",
-    url: 'https://docs.google.com/spreadsheets/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/gviz/tq?tqx=out:csv&sheet=Sheet1',
-    dataType: "text",
-    success: function(csvData) {
-      makeGeoJSON(csvData);
-    }
+  var map = new mapboxgl.Map({
+    container: 'map', // container id
+    //style: "mapbox://styles/mapbox/satellite-v9", // satellite
+    style: "mapbox://styles/mapbox/dark-v10", // dark
+    center: [-110, 30.0], // starting position
+    zoom: 2, // starting zoom
+    attributionControl: false,
+    showLogoBug: true
   });
-});
 
-function makeGeoJSON(csvData) {
-  //console.log(csvData)
-  csv2geojson.csv2geojson(csvData, {
-      latfield: 'Latitude',
-      lonfield: 'Longitude',
-      delimiter: ','
-    }, function(err, data) {
-      //console.log(data)
-      map.on('idle', function() {
 
-          // Add a new source from our GeoJSON data and
-          // set the 'cluster' option to true. GL-JS will
-          // add the point_count property to your source data.
+  // Add zoom and rotation controls to the map.
+  //map.addControl(new mapboxgl.NavigationControl());
 
-          map.addSource('locations', {
-            type: 'geojson',
-            data: data,
-            cluster: true,
-            clusterMaxZoom: 14, // Max zoom to cluster points on
-            clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-          });
+  $(document).ready(function() {
+    $.ajax({
+      type: "GET",
+      url: 'https://docs.google.com/spreadsheets/d/1NcL9JPeQ7k0YW1GuA7KTcx9eGEUAXr5umPJxCoBa_7Q/gviz/tq?tqx=out:csv&sheet=Sheet1',
+      dataType: "text",
+      success: function(csvData) {
+        makeGeoJSON(csvData);
+      }
+    });
+  });
 
-          map.addLayer({
-            id: 'clusters',
-            type: 'circle',
-            source: 'locations',
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#dd502c',
-                5,
-                '#dd502c',
-                15,
-                '#dd502c'
-              ],
-              'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,
-                5,
-                30,
-                15,
-                40
-              ],
-              'circle-opacity': 0.6
-            }
-          });
+  function makeGeoJSON(csvData) {
+    //console.log(csvData)
+    csv2geojson.csv2geojson(csvData, {
+        latfield: 'Latitude',
+        lonfield: 'Longitude',
+        delimiter: ','
+      }, function(err, data) {
+        //console.log(data)
+        map.on('idle', function() {
 
-          map.addLayer({
-              id: 'cluster-count',
-              type: 'symbol',
-              source: 'locations',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 14
-              },
-              paint: {
-                "text-color": "#ffffff"}
-              });
+            // Add a new source from our GeoJSON data and
+            // set the 'cluster' option to true. GL-JS will
+            // add the point_count property to your source data.
+
+            map.addSource('locations', {
+              type: 'geojson',
+              data: data,
+              cluster: true,
+              clusterMaxZoom: 14, // Max zoom to cluster points on
+              clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+            });
 
             map.addLayer({
-              id: 'unclustered-point',
+              id: 'clusters',
               type: 'circle',
               source: 'locations',
-              filter: ['!', ['has', 'point_count']],
+              filter: ['has', 'point_count'],
               paint: {
-                'circle-color': '#dd502c',
-                'circle-radius': 9,
-                'circle-stroke-width': 0,
-                'circle-stroke-color': '#fff',
-                'circle-opacity': 0.9
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#dd502c',
+                  5,
+                  '#dd502c',
+                  15,
+                  '#dd502c'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  5,
+                  30,
+                  15,
+                  40
+                ],
+                'circle-opacity': 0.6
               }
             });
 
-            // inspect a cluster on click
-            map.on('click', 'clusters', function(e) {
-              var features = map.queryRenderedFeatures(e.point, {
-                layers: ['clusters']
-              });
-              var clusterId = features[0].properties.cluster_id;
-              map.getSource('locations').getClusterExpansionZoom(
-                clusterId,
-                function(err, zoom) {
-                  if (err) return;
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'locations',
+                filter: ['has', 'point_count'],
+                layout: {
+                  'text-field': '{point_count_abbreviated}',
+                  'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                  'text-size': 14
+                },
+                paint: {
+                  "text-color": "#ffffff"}
+                });
 
-                  map.easeTo({
-                    center: features[0].geometry.coordinates,
-                    zoom: zoom
-                  });
+              map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'locations',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                  'circle-color': '#dd502c',
+                  'circle-radius': 9,
+                  'circle-stroke-width': 0,
+                  'circle-stroke-color': '#fff',
+                  'circle-opacity': 0.9
                 }
-              );
+              });
+
+              // inspect a cluster on click
+              map.on('click', 'clusters', function(e) {
+                var features = map.queryRenderedFeatures(e.point, {
+                  layers: ['clusters']
+                });
+                var clusterId = features[0].properties.cluster_id;
+                map.getSource('locations').getClusterExpansionZoom(
+                  clusterId,
+                  function(err, zoom) {
+                    if (err) return;
+
+                    map.easeTo({
+                      center: features[0].geometry.coordinates,
+                      zoom: zoom
+                    });
+                  }
+                );
+              });
+
+              // make popup
+              map.on('click', 'unclustered-point', function(e) {
+                var coordinates = e.features[0].geometry.coordinates.slice();
+                var river = e.features[0].properties.River;
+                var desc = e.features[0].properties.Description;
+                var maplink = e.features[0].properties.MapLink;
+                var datalink = e.features[0].properties.DataLink;
+
+                // Ensure that if the map is zoomed out such that
+                // multiple copies of the feature are visible, the
+                // popup appears over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                new mapboxgl.Popup()
+                  .setLngLat(coordinates)
+                  .setHTML(
+                    '<h3>' + river + '</h3>' + '<h4>' + '<b>' + ' ' + desc + '</b>' + '</h4>' + '<h4>' + '<b>' + ' ' + datalink + '</b>' + '</h4>' + '<h4>' + '<b>' + ' ' + maplink + '</b>' + '</h4>'
+                  )
+                  .addTo(map);
+              });
+
+
+              map.on('mouseenter', 'clusters', function() {
+                map.getCanvas().style.cursor = 'pointer';
+              }); map.on('mouseleave', 'clusters', function() {
+                map.getCanvas().style.cursor = '';
+              });
             });
 
-            // make popup
-            map.on('click', 'unclustered-point', function(e) {
-              var coordinates = e.features[0].geometry.coordinates.slice();
-              var river = e.features[0].properties.River;
-              var desc = e.features[0].properties.Description;
+          // Selection basemap
+          var layerList = document.getElementById('menu');
+          var inputs = layerList.getElementsByTagName('input');
 
-              // Ensure that if the map is zoomed out such that
-              // multiple copies of the feature are visible, the
-              // popup appears over the copy being pointed to.
-              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-              }
+          function switchLayer(layer) {
+            var layerId = layer.target.id;
+            map.setStyle('mapbox://styles/' + layerId);
+          }
+          for (var i = 0; i < inputs.length; i++) {
+            inputs[i].onclick = switchLayer;
+          }
 
-              new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(
-                  '<h3>' + river + '</h3>' + '<h4>' + '<b>' + ' ' + desc + '</b>' + '</h4>'
-                )
-                .addTo(map);
-            });
+        });
+    }
 
-
-            map.on('mouseenter', 'clusters', function() {
-              map.getCanvas().style.cursor = 'pointer';
-            }); map.on('mouseleave', 'clusters', function() {
-              map.getCanvas().style.cursor = '';
-            });
-          });
-
-        // Selection basemap
-        var layerList = document.getElementById('menu');
-        var inputs = layerList.getElementsByTagName('input');
-
-        function switchLayer(layer) {
-          var layerId = layer.target.id;
-          map.setStyle('mapbox://styles/' + layerId);
-        }
-        for (var i = 0; i < inputs.length; i++) {
-          inputs[i].onclick = switchLayer;
-        }
-
-      });
-  }
-
-    </script>
+      </script>
   </body>
 
 </html>
