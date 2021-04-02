@@ -104,20 +104,22 @@
 
 
     <script>
+
       mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+
       var map = new mapboxgl.Map({
         container: 'map', // container id
         //style: "mapbox://styles/mapbox/satellite-v9", // satellite
         style: "mapbox://styles/mapbox/dark-v10", // dark
         center: [-95, 41], // starting position
         zoom: 4, // starting zoom
-        attributionControl: false,
-        showLogoBug: true
+        //attributionControl: false,
+        //showLogoBug: true
       });
 
 
       // Add zoom and rotation controls to the map.
-      //map.addControl(new mapboxgl.NavigationControl());
+      map.addControl(new mapboxgl.NavigationControl());
 
       $(document).ready(function() {
         $.ajax({
@@ -131,6 +133,7 @@
       });
 
 
+
       function makeGeoJSON(csvData) {
         //console.log(csvData)
         csv2geojson.csv2geojson(csvData, {
@@ -141,17 +144,16 @@
           //console.log(data)
           map.on('idle', function() {
 
-            // Add a new source from our GeoJSON data and
-            // set the 'cluster' option to true. GL-JS will
-            // add the point_count property to your source data.
-
             map.addSource('locations', {
               type: 'geojson',
               data: data,
               cluster: false,
-              //clusterMaxZoom: 14, // Max zoom to cluster points on
-              //clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+
             });
+
+            data.features.forEach((datum) => {
+              datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
+            })
 
             //Add the the layer to the map
             map.addLayer({
@@ -166,21 +168,29 @@
                 'circle-stroke-width': 1,
                 'circle-stroke-color': '#dd502c',
                 'circle-opacity': 0.5,
-                "circle-radius": [
-              "interpolate", ["linear"], ["zoom"],
-              // zoom is 5 (or less) -> circle radius will be 10px
-              5, 10,
-              // zoom is 10 (or greater) -> circle radius will be 5px
-              10, 5
-          ]
+                "circle-radius": {
+                  property: 'AverageNitrate',
+                  stops: [
+                    [2, 5],
+                    [1000, 25],
+                    [8000, 75],
+                  ]
+                }
               }
 
             });
+            //console.log(data)
 
+            // Create a popup, but don't add it to the map yet.
+            var popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false
+            });
 
+            map.on('mouseenter', 'csvData', function(e) {
+            	// Change the cursor style as a UI indicator.
+      				map.getCanvas().style.cursor = 'pointer';
 
-            // make popup
-            map.on('click', 'csvData', function(e) {
               var coordinates = e.features[0].geometry.coordinates.slice();
               var SiteName = e.features[0].properties.SiteName;
               var AverageNitrate = e.features[0].properties.AverageNitrate;
@@ -192,34 +202,21 @@
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
 
-              new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(
+              // Populate the popup and set its coordinates based on the feature found
+              popup.setLngLat(coordinates).setHTML(
                   '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'Average Nitrate Value: ' + AverageNitrate + ' ' + '</b>' + '</h4>'
                 )
                 .addTo(map);
             });
 
 
-            map.on('mouseenter', 'clusters', function() {
-              map.getCanvas().style.cursor = 'pointer';
-            });
-            map.on('mouseleave', 'clusters', function() {
+            map.on('mouseleave', 'csvData', function() {
               map.getCanvas().style.cursor = '';
+              popup.remove();
             });
           });
 
-          // Selection basemap
-          var layerList = document.getElementById('menu');
-          var inputs = layerList.getElementsByTagName('input');
 
-          function switchLayer(layer) {
-            var layerId = layer.target.id;
-            map.setStyle('mapbox://styles/' + layerId);
-          }
-          for (var i = 0; i < inputs.length; i++) {
-            inputs[i].onclick = switchLayer;
-          }
 
         });
       }
