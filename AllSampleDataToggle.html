@@ -79,7 +79,7 @@
 
   <script>
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
 
   var map = new mapboxgl.Map({
     container: 'map', // container id
@@ -111,157 +111,188 @@
   function makeGeoJSON(csvData) {
     //console.log(csvData)
     csv2geojson.csv2geojson(csvData, {
-        latfield: 'Latitude',
-        lonfield: 'Longitude',
-        delimiter: ','
-      }, function(err, data) {
-        //console.log(data)
-  /*
-        map.addSource('locations', {
-          type: 'geojson',
-          data: data,
-          cluster: false,
-
-        });
-  */
-        data.features.forEach((datum) => {
-          datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
-        })
-        data.features.forEach((datum) => {
-          datum.properties.AveragePhosphate = parseInt(datum.properties.AveragePhosphate)
-        })
-        data.features.forEach((datum) => {
-          datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
-        })
-
-        //console.log(data)
-
-        //Add the the Nitrate layer to the map
-        map.addLayer({
-          id: 'nitrate',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: data
-          },
-          layout: {
-                  // make layer invisible by default
-                  'visibility': 'none'
-             },
-          paint: {
-            'circle-color': '#3366ff',
-            'circle-stroke-width': 1,
-            'circle-stroke-color': '#0033cc',
-            'circle-opacity': 0.5,
-            "circle-radius": {
-              property: 'AverageNitrate',
-              stops: [
-                [2, 5],
-                [1000, 25],
-                [8000, 55],
-              ]
-            }
-          }
-
-        });
-
-        //Add the the Phospate layer to the map
-        map.addLayer({
-          id: 'phosphate',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: data
-          },
-          layout: {
-                  // make layer invisible by default
-                  'visibility': 'none',
-              },
-          paint: {
-            'circle-color': '#cc9900',
-            'circle-stroke-width': 1,
-            'circle-stroke-color': '#b38600',
-            'circle-opacity': 0.5,
-            "circle-radius": {
-              property: 'AveragePhosphate',
-              stops: [
-                [1, 5],
-                [50, 25],
-                [250, 45],
-              ]
-            }
-          }
-
-        });
-
-        //Add the the DOC layer to the map
-            map.addLayer({
-              id: 'doc',
-              type: 'circle',
-              source: {
-                type: 'geojson',
-                data: data
-              },
-             layout: {
-                  // make layer invisible by default
-                  'visibility': 'none'
-              },
-              paint: {
-                'circle-color': '#009933',
-                'circle-stroke-width': 1,
-                'circle-stroke-color': '#00802b',
-                'circle-opacity': 0.5,
-                "circle-radius": {
-                  property: 'AverageDOC',
-                  stops: [
-                    [0, 2],
-                    [1, 15],
-                    [5, 35],
-                  ]
-                }
-              }
+      latfield: 'Latitude',
+      lonfield: 'Longitude',
+      delimiter: ','
+    }, function(err, data) {
+      //console.log(data)
+      /*
+            map.addSource('locations', {
+              type: 'geojson',
+              data: data,
+              cluster: false,
 
             });
-
-
+      */
+      data.features.forEach((datum) => {
+        datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
       })
+      data.features.forEach((datum) => {
+        datum.properties.AveragePhosphate = parseInt(datum.properties.AveragePhosphate)
+      })
+      data.features.forEach((datum) => {
+        datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
+      })
+
+      //console.log(data)
+
+      //Add the the Nitrate layer to the map
+      map.addLayer({
+        id: 'Nitrate',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: data
+        },
+        layout: {
+          // make layer invisible by default
+          'visibility': 'none'
+        },
+        paint: {
+          'circle-color': '#3366ff',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#0033cc',
+          'circle-opacity': 0.5,
+          "circle-radius": {
+            property: 'AverageNitrate',
+            stops: [
+              [2, 5],
+              [1000, 25],
+              [8000, 55],
+            ]
+          }
+        }
+
+      });
+
+      //Add the the Phospate layer to the map
+      map.addLayer({
+        id: 'Phosphate',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: data
+        },
+        layout: {
+          // make layer invisible by default
+          'visibility': 'none',
+        },
+        paint: {
+          'circle-color': '#ffd24d',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#ffc61a',
+          'circle-opacity': 0.5,
+          "circle-radius": {
+            property: 'AveragePhosphate',
+            stops: [
+              [1, 5],
+              [50, 25],
+              [250, 45],
+            ]
+          }
+        }
+
+      });
+
+      //Add the the DOC layer to the map
+      map.addLayer({
+        id: 'DOC',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: data
+        },
+        layout: {
+          // make layer invisible by default
+          'visibility': 'none'
+        },
+        paint: {
+          'circle-color': '#cc3300',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#992600',
+          'circle-opacity': 0.5,
+          "circle-radius": {
+            property: 'AverageDOC',
+            stops: [
+              [0, 2],
+              [1, 15],
+              [5, 35],
+            ]
+          }
+        }
+
+      });
+
+
+    })
   }
 
-      // After the last frame rendered before the map enters an "idle" state.
-      map.on('load', function() {
-          // If these two layers have been added to the style,
-          // add the toggle buttons.
-          // Enumerate ids of the layers.
-            var toggleableLayerIds = ['nitrate', 'phosphate', 'doc'];
-            // Set up the corresponding toggle button for each layer.
-              for (var i = 0; i < toggleableLayerIds.length; i++) {
-              var id = toggleableLayerIds[i];
+  // Create a popup, but don't add it to the map yet.
+  var popup = new mapboxgl.Popup({
+    closeButton: false
+  });
 
-              var link = document.createElement('a');
-              link.href = '#';
-              link.className = '';
-              link.textContent = id;
+  // a function for the popup values
+  function identifyFeatures(location, layer, fields) {
+    var identifiedFeatures = map.queryRenderedFeatures(location.point, layer);
+    //console.log(identifiedFeatures);
+    popup.remove();
+    if (identifiedFeatures != 'undefined') {
+      var popupText = "";
+      for (i = 0; i < fields.length; i++) {
+        popupText += "<strong>" + fields[i] + ":</strong> " + identifiedFeatures[0].properties[fields[i]] + "<" + "br" + ">"
+      }
+      popup.setLngLat(location.lngLat)
+        .setHTML(popupText)
+        .addTo(map);
+    }
+  }
 
-              link.onclick = function (e) {
-                  var clickedLayer = this.textContent;
-                  e.preventDefault();
-                  e.stopPropagation();
+  // populate the menu and call the popup
+  map.on('load', function() {
+    // If these layers have been added to the style,
+    // add the toggle buttons.
+    // Enumerate ids of the layers.
+    var toggleableLayerIds = ['Nitrate', 'Phosphate', 'DOC'];
+    // Set up the corresponding toggle button for each layer.
+    for (var i = 0; i < toggleableLayerIds.length; i++) {
+      var id = toggleableLayerIds[i];
 
-                  var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      var link = document.createElement('a');
+      link.href = '#';
+      link.className = '';
+      link.textContent = id;
 
-                  if (visibility === 'visible') {
-                      map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                      this.className = '';
-                  } else {
-                      this.className = 'active';
-                      map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                  }
-              };
+      link.onclick = function(e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+        // Display a popup with the name of the county
 
-              var layers = document.getElementById('menu');
-              layers.appendChild(link);
-          }
-     } )
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+          map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+          this.className = '';
+        } else {
+          this.className = 'active';
+          map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+
+        map.on('click', function(e) {
+          map.getCanvas().style.cursor = 'pointer';
+          identifyFeatures(e, toggleableLayerIds[i], ["SiteName", "AverageNitrate", "AveragePhosphate", "AverageDOC"])
+
+        });
+
+
+
+      };
+
+      var layers = document.getElementById('menu');
+      layers.appendChild(link);
+    }
+  })
 
 
       </script>
