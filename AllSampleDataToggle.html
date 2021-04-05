@@ -229,7 +229,8 @@
 
   // Create a popup, but don't add it to the map yet.
   var popup = new mapboxgl.Popup({
-    closeButton: false
+    closeButton: true,
+    closeOnMove: true
   });
 
   // a function for the popup values
@@ -237,7 +238,7 @@
     var identifiedFeatures = map.queryRenderedFeatures(location.point, layer);
     //console.log(identifiedFeatures);
     popup.remove();
-    if (identifiedFeatures != 'undefined') {
+    if (identifiedFeatures != "") {
       var popupText = "";
       for (i = 0; i < fields.length; i++) {
         popupText += "<strong>" + fields[i] + ":</strong> " + identifiedFeatures[0].properties[fields[i]] + "<" + "br" + ">"
@@ -283,8 +284,12 @@
           map.getCanvas().style.cursor = 'pointer';
           identifyFeatures(e, toggleableLayerIds[i], ["SiteName", "AverageNitrate", "AveragePhosphate", "AverageDOC"])
 
-        });
+          var coordinates = e.features[0].geometry.coordinates.slice();
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
 
+        });
 
 
       };
