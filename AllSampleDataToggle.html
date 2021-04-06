@@ -4,15 +4,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>SOTF Sample Data</title>
+  <title>Average Sample Data</title>
   <meta name="description" content="">
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/mapbox-gl-animated-popup@v0.1.4/dist/mapbox-gl-animated-popup.min.js"></script>
 
 </head>
+
   <style>
 
   body {
@@ -56,7 +58,7 @@
   }
 
   #menu a:hover {
-    background-color: #f8f8f8;
+    background-color: #cce6ff;
     color: #404040;
   }
 
@@ -68,6 +70,28 @@
   #menu a.active:hover {
     background: #3074a4;
   }
+
+
+  .mapboxgl-popup {
+        padding-bottom: 1px;
+        opacity: 0.8;
+      }
+
+  .mapboxgl-popup-close-button {
+        display: false;
+      }
+
+  .mapboxgl-popup-content {
+        font: 400 14px/22px "Trebuchet MS", Helvetica, sans-serif;
+        padding: 0;
+        width: 250px;
+      }
+
+  .mapboxgl-popup-content-wrapper {
+        padding: 1%;
+      }
+
+
 
   </style>
 
@@ -232,10 +256,26 @@
   }
 
   // Create a popup, but don't add it to the map yet.
-  var popup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnMove: true
-  });
+  //var popup = new mapboxgl.Popup({
+  //  closeButton: false,
+  //  closeOnMove: true
+  //});
+
+
+      // create the popup
+      var popup = new AnimatedPopup({
+          offset: 5,
+          closeButton: false,
+          openingAnimation: {
+              duration: 300,
+              easing: 'easeOutSine'
+          },
+          closingAnimation: {
+              duration: 300,
+              easing: 'easeInSine'
+          }
+      });
+
 
   // populate the menu and call the popup
   map.on('load', function() {
@@ -291,7 +331,7 @@
           // Populate the popup and set its coordinates
           // based on the feature found.
           popup.setLngLat(coordinates).setHTML(
-              '<h2>' + '<center>' + SiteName +'</center>' + '</h2>' + '<center>' + ' (average data values)' + '</center>' + '<h4>' + '<ul>' + '<li>' + 'Nitrate (NO3_µgL): ' + AverageNitrate + '</li>' + '<li>' + 'Phosphate (PO4_µgL): ' + AveragePhosphate + '</li>' + '<li>' + 'DOC (DOC_mgL): ' + AverageDOC + '</li>' + '</ul>' + '</h4>'
+              '<h2>' + '<center>' + SiteName +'</center>' + '</h2>' + '<h4>' + '<ul>' + '<li>' + 'Nitrate (NO3_µgL): ' + AverageNitrate + '</li>' + '<li>' + 'Phosphate (PO4_µgL): ' + AveragePhosphate + '</li>' + '<li>' + 'DOC (DOC_mgL): ' + AverageDOC + '</li>' + '</ul>' + '</h4>'
             )
             .addTo(map);
         });
