@@ -73,9 +73,13 @@
 
   <body>
 
-    <nav id="menu"></nav>
-    <div id="map"></div>
+    <nav id="menu">
+              <p> <h2><center>
+              Data</center>
+              </h2></p>
+          </nav>
 
+      <div id="map"></div>
 
   <script>
 
@@ -238,6 +242,7 @@
     var identifiedFeatures = map.queryRenderedFeatures(location.point, layer);
     //console.log(identifiedFeatures);
     popup.remove();
+
     if (identifiedFeatures != "") {
       var popupText = "";
       for (i = 0; i < fields.length; i++) {
