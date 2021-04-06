@@ -237,13 +237,15 @@
     closeOnMove: true
   });
 
+  /*
   // a function for the popup values
   function identifyFeatures(location, layer, fields) {
     var identifiedFeatures = map.queryRenderedFeatures(location.point, layer);
-    //console.log(identifiedFeatures);
+    console.log(identifiedFeatures);
     popup.remove();
 
-    if (identifiedFeatures != "") {
+    if (identifiedFeatures != '') {
+      //if (fields[0].properties != 0) {
       var popupText = "";
       for (i = 0; i < fields.length; i++) {
         popupText += "<strong>" + fields[i] + ":</strong> " + identifiedFeatures[0].properties[fields[i]] + "<" + "br" + ">"
@@ -253,6 +255,7 @@
         .addTo(map);
     }
   }
+  */
 
   // populate the menu and call the popup
   map.on('load', function() {
@@ -268,6 +271,7 @@
       link.href = '#';
       link.className = '';
       link.textContent = id;
+
 
       link.onclick = function(e) {
         var clickedLayer = this.textContent;
@@ -285,16 +289,48 @@
           map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
         }
 
-        map.on('click', function(e) {
+        //      map.on('click', function(e) {
+        //        map.getCanvas().style.cursor = 'pointer';
+        //        identifyFeatures(e, toggleableLayerIds[i], ["SiteName", "AverageNitrate", "AveragePhosphate", "AverageDOC"])
+        //
+        //        var coordinates = e.features[0].geometry.coordinates.slice();
+        //        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        //          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        //        }
+        //
+        //      });
+
+
+        map.on('mouseenter', clickedLayer, function(e) {
+          // Change the cursor style as a UI indicator.
           map.getCanvas().style.cursor = 'pointer';
-          identifyFeatures(e, toggleableLayerIds[i], ["SiteName", "AverageNitrate", "AveragePhosphate", "AverageDOC"])
 
           var coordinates = e.features[0].geometry.coordinates.slice();
+          var SiteName = e.features[0].properties.SiteName;
+          var AverageNitrate = e.features[0].properties.AverageNitrate;
+          var AveragePhosphate = e.features[0].properties.AveragePhosphate;
+          var AverageDOC = e.features[0].properties.AverageDOC;
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
           while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
 
+          // Populate the popup and set its coordinates
+          // based on the feature found.
+          popup.setLngLat(coordinates).setHTML(
+              "<strong>" + SiteName + "</strong>" + ' (average data values)' + '<h4>' + '<ul>' + '<li>' + 'Nitrate (NO3_µgL): ' + AverageNitrate + '</li>' + '<li>' + 'Phosphate (PO4_µgL): ' + AveragePhosphate + '</li>' + '<li>' + 'DOC (DOC_mgL): ' + AverageDOC + '</li>' + '</ul>' + '</h4>'
+            )
+            .addTo(map);
         });
+
+        map.on('mouseleave', clickedLayer, function() {
+          map.getCanvas().style.cursor = '';
+          popup.remove();
+        });
+
 
 
       };
@@ -303,7 +339,6 @@
       layers.appendChild(link);
     }
   })
-
 
       </script>
   </body>
