@@ -233,29 +233,9 @@
 
   // Create a popup, but don't add it to the map yet.
   var popup = new mapboxgl.Popup({
-    closeButton: true,
+    closeButton: false,
     closeOnMove: true
   });
-
-  /*
-  // a function for the popup values
-  function identifyFeatures(location, layer, fields) {
-    var identifiedFeatures = map.queryRenderedFeatures(location.point, layer);
-    console.log(identifiedFeatures);
-    popup.remove();
-
-    if (identifiedFeatures != '') {
-      //if (fields[0].properties != 0) {
-      var popupText = "";
-      for (i = 0; i < fields.length; i++) {
-        popupText += "<strong>" + fields[i] + ":</strong> " + identifiedFeatures[0].properties[fields[i]] + "<" + "br" + ">"
-      }
-      popup.setLngLat(location.lngLat)
-        .setHTML(popupText)
-        .addTo(map);
-    }
-  }
-  */
 
   // populate the menu and call the popup
   map.on('load', function() {
@@ -289,16 +269,6 @@
           map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
         }
 
-        //      map.on('click', function(e) {
-        //        map.getCanvas().style.cursor = 'pointer';
-        //        identifyFeatures(e, toggleableLayerIds[i], ["SiteName", "AverageNitrate", "AveragePhosphate", "AverageDOC"])
-        //
-        //        var coordinates = e.features[0].geometry.coordinates.slice();
-        //        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        //        }
-        //
-        //      });
 
 
         map.on('mouseenter', clickedLayer, function(e) {
@@ -321,7 +291,7 @@
           // Populate the popup and set its coordinates
           // based on the feature found.
           popup.setLngLat(coordinates).setHTML(
-              "<strong>" + SiteName + "</strong>" + ' (average data values)' + '<h4>' + '<ul>' + '<li>' + 'Nitrate (NO3_µgL): ' + AverageNitrate + '</li>' + '<li>' + 'Phosphate (PO4_µgL): ' + AveragePhosphate + '</li>' + '<li>' + 'DOC (DOC_mgL): ' + AverageDOC + '</li>' + '</ul>' + '</h4>'
+              '<h2>' + '<center>' + SiteName +'</center>' + '</h2>' + '<center>' + ' (average data values)' + '</center>' + '<h4>' + '<ul>' + '<li>' + 'Nitrate (NO3_µgL): ' + AverageNitrate + '</li>' + '<li>' + 'Phosphate (PO4_µgL): ' + AveragePhosphate + '</li>' + '<li>' + 'DOC (DOC_mgL): ' + AverageDOC + '</li>' + '</ul>' + '</h4>'
             )
             .addTo(map);
         });
