@@ -31,8 +31,8 @@
     background: #fff;
     position: absolute;
     z-index: 1;
-    top: 100px;
-    right: 100px;
+    top: 50px;
+    right: 50px;
     border-radius: 3px;
     width: 120px;
     border: 1px solid rgba(0, 0, 0, 0.4);
@@ -119,7 +119,7 @@
 
 
   // Add zoom and rotation controls to the map.
-  map.addControl(new mapboxgl.NavigationControl());
+  map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
   // Get the data from a Google Sheet and turn it into GeoJSON
   $(document).ready(function() {
