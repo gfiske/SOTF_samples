@@ -11,8 +11,6 @@
   <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
-  <script src="https://cdn.jsdelivr.net/npm/mapbox-gl-animated-popup@v0.1.4/dist/mapbox-gl-animated-popup.min.js"></script>
-
 </head>
 
   <style>
@@ -256,29 +254,15 @@
   }
 
   // Create a popup, but don't add it to the map yet.
-  //var popup = new mapboxgl.Popup({
-  //  closeButton: false,
-  //  closeOnMove: true
-  //});
-
-
-      // create the popup
-      var popup = new AnimatedPopup({
-          offset: 5,
-          closeButton: false,
-          openingAnimation: {
-              duration: 300,
-              easing: 'easeOutSine'
-          },
-          closingAnimation: {
-              duration: 300,
-              easing: 'easeInSine'
-          }
-      });
+  var popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnMove: true
+  });
 
 
   // populate the menu and call the popup
   map.on('load', function() {
+
     // If these layers have been added to the style,
     // add the toggle buttons.
     // Enumerate ids of the layers.
@@ -348,7 +332,21 @@
       var layers = document.getElementById('menu');
       layers.appendChild(link);
     }
+
+                // Selection basemap
+            var fred = document.getElementById('radiomenu');
+            var ralph = fred.getElementsByTagName('radioinput');
+
+            function switchLayer(layer) {
+              var layerId = layer.target.id;
+              map.setStyle('mapbox://styles/' + layerId);
+            }
+            for (var i = 0; i < ralph.length; i++) {
+              ralph[i].onclick = switchLayer;
+            }
+
   })
+
 
       </script>
   </body>
