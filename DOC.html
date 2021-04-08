@@ -125,7 +125,7 @@
       $(document).ready(function() {
         $.ajax({
           type: "GET",
-          url: 'https://docs.google.com/spreadsheets/d/19Ze47REF_M7y_XqjQoH6X9hCSBW6qHVf1Hz0PJ80IPo/gviz/tq?tqx=out:csv&sheet=Sheet1',
+          url: 'https://docs.google.com/spreadsheets/d/1jjnlIJLe2LOi8SZ_yOYak3u4n9KeT0qz2VIN0TtcSwk/gviz/tq?tqx=out:csv&sheet=Sheet1',
           dataType: "text",
           success: function(csvData) {
             makeGeoJSON(csvData);
@@ -205,7 +205,7 @@
 
               // Populate the popup and set its coordinates based on the feature found
               popup.setLngLat(coordinates).setHTML(
-                  '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'Average DOC Value (DOC_mgL): ' + AverageDOC + ' ' + '</b>' + '</h4>'
+                  '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'Average DOC (DOC_mgL): ' + AverageDOC + ' ' + '</b>' + '</h4>'
                 )
                 .addTo(map);
             });
