@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SOTF Average Nitrate</title>
+    <title>SOTF Average DOC</title>
     <meta name="description" content="">
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
@@ -153,7 +153,7 @@
             });
 
             data.features.forEach((datum) => {
-              datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
+              datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
             })
 
             //Add the the layer to the map
@@ -165,19 +165,19 @@
                 data: data
               },
               paint: {
-                'circle-color': '#3366ff',
-                'circle-stroke-width': 1,
-                'circle-stroke-color': '#0033cc',
-                'circle-opacity': 0.5,
-                "circle-radius": {
-                  property: 'AverageNitrate',
-                  stops: [
-                    [2, 5],
-                    [1000, 25],
-                    [8000, 65],
-                  ]
-                }
-              }
+                 'circle-color': '#cc3300',
+                 'circle-stroke-width': 1,
+                 'circle-stroke-color': '#992600',
+                 'circle-opacity': 0.8,
+                 "circle-radius": {
+                   property: 'AverageDOC',
+                   stops: [
+                     [0, 2],
+                     [1, 15],
+                     [5, 35],
+                   ]
+                 }
+               }
 
             });
             //console.log(data)
@@ -194,7 +194,7 @@
 
               var coordinates = e.features[0].geometry.coordinates.slice();
               var SiteName = e.features[0].properties.SiteName;
-              var AverageNitrate = e.features[0].properties.AverageNitrate;
+              var AverageDOC = e.features[0].properties.AverageDOC;
 
               // Ensure that if the map is zoomed out such that
               // multiple copies of the feature are visible, the
@@ -205,7 +205,7 @@
 
               // Populate the popup and set its coordinates based on the feature found
               popup.setLngLat(coordinates).setHTML(
-                  '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'Average Nitrate Value (NO3_µgL): ' + AverageNitrate + ' ' + '</b>' + '</h4>'
+                  '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'Average DOC Value (DOC_mgL): ' + AverageDOC + ' ' + '</b>' + '</h4>'
                 )
                 .addTo(map);
             });
