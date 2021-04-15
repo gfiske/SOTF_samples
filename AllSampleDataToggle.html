@@ -142,23 +142,20 @@
       delimiter: ','
     }, function(err, data) {
       //console.log(data)
-      /*
-            map.addSource('locations', {
-              type: 'geojson',
-              data: data,
-              cluster: false,
 
-            });
-      */
       data.features.forEach((datum) => {
-        datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
+        //datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
+        datum.properties.AverageNitrate = Math.round(datum.properties.AverageNitrate)
       })
       data.features.forEach((datum) => {
-        datum.properties.AveragePhosphate = parseInt(datum.properties.AveragePhosphate)
+        //datum.properties.AveragePhosphate = parseInt(datum.properties.AveragePhosphate)
+        datum.properties.AveragePhosphate = Math.round(datum.properties.AveragePhosphate)
       })
       data.features.forEach((datum) => {
-        datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
+        //datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
+        datum.properties.AverageDOC = Math.round(datum.properties.AverageDOC)
       })
+
 
       //console.log(data)
 
