@@ -97,7 +97,7 @@
 
     <nav id="menu">
               <p> <h2><center>
-              Data</center>
+              Nutrients and Carbon</center>
               </h2></p>
           </nav>
 
@@ -144,22 +144,17 @@
       //console.log(data)
 
       data.features.forEach((datum) => {
-        //datum.properties.AverageNitrate = parseInt(datum.properties.AverageNitrate)
         datum.properties.AverageNitrate = Math.round(datum.properties.AverageNitrate)
       })
       data.features.forEach((datum) => {
-        //datum.properties.AveragePhosphate = parseInt(datum.properties.AveragePhosphate)
         datum.properties.AveragePhosphate = Math.round(datum.properties.AveragePhosphate)
       })
       data.features.forEach((datum) => {
-        //datum.properties.AverageDOC = parseInt(datum.properties.AverageDOC)
         datum.properties.AverageDOC = Math.round(datum.properties.AverageDOC)
       })
 
 
-      //console.log(data)
-
-      //Add the the Nitrate layer to the map
+      //Add the Nitrate layer to the map
       map.addLayer({
         id: 'Nitrate',
         type: 'circle',
@@ -188,7 +183,7 @@
 
       });
 
-      //Add the the Phospate layer to the map
+      //Add the Phospate layer to the map
       map.addLayer({
         id: 'Phosphate',
         type: 'circle',
@@ -217,7 +212,7 @@
 
       });
 
-      //Add the the DOC layer to the map
+      //Add the DOC layer to the map
       map.addLayer({
         id: 'DOC',
         type: 'circle',
