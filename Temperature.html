@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Average Sample Data</title>
+  <meta name="description" content="">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+  <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+</head>
+
+<style>
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+#menu {
+  background: #fff;
+  position: absolute;
+  z-index: 1;
+  top: 50px;
+  right: 50px;
+  border-radius: 3px;
+  width: 120px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-family: 'Open Sans', sans-serif;
+}
+
+#menu a {
+  font-size: 13px;
+  color: #404040;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+#menu a:last-child {
+  border: none;
+}
+
+#menu a:hover {
+  background-color: #cce6ff;
+  color: #404040;
+}
+
+#menu a.active {
+  background-color: #3887be;
+  color: #ffffff;
+}
+
+#menu a.active:hover {
+  background: #3074a4;
+}
+
+
+.mapboxgl-popup {
+      padding-bottom: 1px;
+      opacity: 0.8;
+    }
+
+.mapboxgl-popup-close-button {
+      display: false;
+    }
+
+.mapboxgl-popup-content {
+      font: 400 14px/22px "Trebuchet MS", Helvetica, sans-serif;
+      padding: 0;
+      width: 250px;
+    }
+
+.mapboxgl-popup-content-wrapper {
+      padding: 1%;
+    }
+
+
+
+</style>
+
+<body>
+  <nav id="menu">
+    <p>
+      <h1>
+        <center>
+          <sup>°</sup>F</center>
+      </h1>
+    </p>
+  </nav>
+  <div id="map"></div>
+
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+
+var map = new mapboxgl.Map({
+  container: 'map', // container id
+  //style: "mapbox://styles/mapbox/satellite-v9", // satellite
+  style: "mapbox://styles/mapbox/dark-v10", // dark
+  center: [-110, 30.0], // starting position
+  zoom: 2, // starting zoom
+  //attributionControl: false,
+  //showLogoBug: true
+});
+
+
+// Add zoom and rotation controls to the map.
+//map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+// Get the data from a Google Sheet and turn it into GeoJSON
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    url: 'https://docs.google.com/spreadsheets/d/1m1Fj1IzM7lv-PddvFwRGykJ2rbY9TGuGAKaDKHg9IZQ/gviz/tq?tqx=out:csv&sheet=Sheet1',
+    dataType: "text",
+    success: function(csvData) {
+      makeGeoJSON(csvData);
+    }
+  });
+});
+
+
+function makeGeoJSON(csvData) {
+  //console.log(csvData)
+  csv2geojson.csv2geojson(csvData, {
+    latfield: 'Latitude',
+    lonfield: 'Longitude',
+    delimiter: ','
+  }, function(err, data) {
+    //console.log(data)
+
+    data.features.forEach((datum) => {
+      datum.properties.Average = Math.round(datum.properties.Average)
+    })
+    data.features.forEach((datum) => {
+      datum.properties.Minimum = Math.round(datum.properties.Minimum)
+    })
+    data.features.forEach((datum) => {
+      datum.properties.Maximum = Math.round(datum.properties.Maximum)
+    })
+
+
+    //console.log(data)
+
+    //Add the Minimum layer to the map
+    map.addLayer({
+      id: 'Minimum',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: data
+      },
+      layout: {
+        // make layer invisible by default
+        'visibility': 'none'
+      },
+      paint: {
+        'circle-color': '#3366ff',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#0033cc',
+        'circle-opacity': 0.5,
+        "circle-radius": {
+          property: 'Minimum',
+          stops: [
+            [29, 3],
+            [45, 10],
+            [72, 20],
+          ]
+        }
+      }
+
+    });
+
+    //Add the Average layer to the map
+    map.addLayer({
+      id: 'Average',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: data
+      },
+      layout: {
+        // make layer invisible by default
+        'visibility': 'none',
+      },
+      paint: {
+        'circle-color': '#A9A9A9',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#BEBEBE',
+        'circle-opacity': 0.5,
+        "circle-radius": {
+          property: 'Average',
+          stops: [
+            [29, 3],
+            [45, 10],
+            [72, 20],
+          ]
+        }
+      }
+
+    });
+
+    //Add the Maximum layer to the map
+    map.addLayer({
+      id: 'Maximum',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: data
+      },
+      layout: {
+        // make layer invisible by default
+        'visibility': 'none'
+      },
+      paint: {
+        'circle-color': '#ff3300',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#cc2900',
+        'circle-opacity': 0.5,
+        "circle-radius": {
+          property: 'Maximum',
+          stops: [
+            [29, 3],
+            [45, 10],
+            [72, 20],
+          ]
+        }
+      }
+
+    });
+
+
+  })
+}
+
+// Create a popup, but don't add it to the map yet.
+var popup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnMove: true
+});
+
+
+// populate the menu and call the popup
+map.on('load', function() {
+
+  // If these layers have been added to the style,
+  // add the toggle buttons.
+  // Enumerate ids of the layers.
+  var toggleableLayerIds = ['Average', 'Minimum', 'Maximum'];
+  // Set up the corresponding toggle button for each layer.
+  for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = '';
+    link.textContent = id;
+
+
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      // Display a popup with the name of the county
+
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+
+
+
+      map.on('mouseenter', clickedLayer, function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var SiteName = e.features[0].properties.SiteName;
+        var Average = e.features[0].properties.Average;
+        var Min = e.features[0].properties.Minimum;
+        var Max = e.features[0].properties.Maximum;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        popup.setLngLat(coordinates).setHTML(
+            '<h2>' + '<center>' + SiteName +'</center>' + '</h2>' + '<h4>' + '<ul>' + '<li>' + 'Average: ' + Average + '</li>' + '<li>' + 'Minimum: ' + Min + '</li>' + '<li>' + 'Maximum: ' + Max + '</li>' + '</ul>' + '</h4>'
+          )
+          .addTo(map);
+      });
+
+      map.on('mouseleave', clickedLayer, function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+      });
+
+
+
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+
+})
+
+</script>
+</body>
+</html>
