@@ -36,20 +36,10 @@
 
         esriConfig.apiKey = "AAPKc758424f9fd4486d9134df747a57c2fdrq8MzZy9VHqbfPzXNut5SvvoABhJdzImRZOvLbw3qin0_dz9IeNBEOADq9Up7hyG";
 
-        const trailheadsRenderer = {
-        "type": "simple",
-        "symbol": {
-          "type": "picture-marker",
-          "url": "https://github.com/gfiske/SOTF_samples/blob/master/water-15.png",
-          "width": "18px",
-          "height": "18px"
-            }
-          }
 
         const greg = new KMLLayer({
           // inReach Mini kml feed
-          url: "https://share.garmin.com/Feed/Share/SM4EN",
-          renderer: trailheadsRenderer
+          url: "https://share.garmin.com/Feed/Share/SM4EN"
         });
 
         const wayPointsLabels = {
@@ -72,10 +62,23 @@
           }
         };
 
+        // Define a pop-up for waypoints
+        const popupWayPoints = {
+           "title": "Waypoint",
+           "content": "<b>Sample ID:</b> {SampleID}<br><b>Sample Location:</b> {SampleLoca}"
+         }
+
         //waypoint feature layer (points)
         const waypoints = new FeatureLayer({
         url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Kwethluk_points_to_find_2021/FeatureServer",
-        labelingInfo: [wayPointsLabels]
+        labelingInfo: [wayPointsLabels],
+        outFields: ["SampleID","SampleLoca"],
+        popupTemplate: popupWayPoints
+          });
+
+        //floatPath feature layer (points)
+        const floatPath = new FeatureLayer({
+        url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Float_Path/FeatureServer",
           });
 
         const map = new Map({
@@ -89,6 +92,7 @@
           zoom: 9
         });
 
+        map.add(floatPath);
         map.add(waypoints);
 
         const scalebar = new ScaleBar({
