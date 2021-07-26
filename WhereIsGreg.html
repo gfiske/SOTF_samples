@@ -52,9 +52,30 @@
           renderer: trailheadsRenderer
         });
 
-        //Trailheads feature layer (points)
-        const trailheadsLayer = new FeatureLayer({
-        url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Kwethluk_points_to_find_2021/FeatureServer"
+        const wayPointsLabels = {
+          symbol: {
+            type: "text",
+            color: "#FFFFFF",
+            //haloColor: "#B8B8B8",
+            //haloSize: "2px",
+            font: {
+              size: "12px",
+              family: "Arial",
+              style: "italic",
+              weight: "normal"
+            }
+          },
+
+          labelPlacement: "above-center",
+          labelExpressionInfo: {
+            expression: "$feature.category"
+          }
+        };
+
+        //waypoint feature layer (points)
+        const waypoints = new FeatureLayer({
+        url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Kwethluk_points_to_find_2021/FeatureServer",
+        labelingInfo: [wayPointsLabels]
           });
 
         const map = new Map({
@@ -65,11 +86,10 @@
         const view = new MapView({
           container: "viewDiv",
           map: map,
-          zoom: 10
+          zoom: 9
         });
 
-        map.add(trailheadsLayer);
-
+        map.add(waypoints);
 
         const scalebar = new ScaleBar({
           view: view
