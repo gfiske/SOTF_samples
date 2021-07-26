@@ -31,15 +31,16 @@
         "esri/views/MapView",
         "esri/layers/FeatureLayer",
         "esri/layers/KMLLayer",
-        "esri/widgets/ScaleBar"
-      ], (esriConfig, Map, MapView, FeatureLayer, KMLLayer, ScaleBar) => {
+        "esri/widgets/ScaleBar",
+        "esri/widgets/LayerList"
+      ], (esriConfig, Map, MapView, FeatureLayer, KMLLayer, ScaleBar, LayerList) => {
 
         esriConfig.apiKey = "AAPKc758424f9fd4486d9134df747a57c2fdrq8MzZy9VHqbfPzXNut5SvvoABhJdzImRZOvLbw3qin0_dz9IeNBEOADq9Up7hyG";
 
-
+        // define the kml feed from inReach
         const greg = new KMLLayer({
-          // inReach Mini kml feed
-          url: "https://share.garmin.com/Feed/Share/SM4EN"
+          // inReach Mini kml feed url
+          url: "https://share.garmin.com/Feed/Share/gfiske"
         });
 
         const wayPointsLabels = {
@@ -62,6 +63,18 @@
           }
         };
 
+        // define float path style
+          const floatPathRenderer = {
+            type: "simple",
+            symbol: {
+              type: "simple-line",
+              style: "short-dot",
+              color: "#FFFFFF",
+              width: "2px"
+            }
+          };
+
+
         // Define a pop-up for waypoints
         const popupWayPoints = {
            "title": "Waypoint",
@@ -79,19 +92,23 @@
         //floatPath feature layer (points)
         const floatPath = new FeatureLayer({
         url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Float_Path/FeatureServer",
+          renderer: floatPathRenderer
           });
 
+        // create a map and add the kml feed to it
         const map = new Map({
           basemap: "arcgis-imagery",
           layers: [greg]
         });
 
+        // add the map to the MapView
         const view = new MapView({
           container: "viewDiv",
           map: map,
           zoom: 9
         });
 
+        // add additional hosted feature layers
         map.add(floatPath);
         map.add(waypoints);
 
@@ -105,6 +122,23 @@
         greg.when(() => {
           view.goTo(greg.fullExtent);
         });
+
+        const layerList = new LayerList({
+          view: view,
+          // executes for each ListItem in the LayerList
+          //   listItemCreatedFunction: zoomToLayer(item)
+          });
+        view.ui.add(layerList, "top-right");
+
+        function zoomToLayer(layer) {
+            return layer.queryExtent().then((response) => {
+              view.goTo(response.extent).catch((error) => {
+                console.error(error);
+              });
+            });
+          }
+
+
 
 
       });
