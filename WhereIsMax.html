@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Where is Max</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.20/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.20/"></script>
+
+    <script>
+      require([
+        "esri/config",
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/layers/KMLLayer",
+        "esri/widgets/ScaleBar",
+        "esri/widgets/LayerList"
+      ], (esriConfig, Map, MapView, FeatureLayer, KMLLayer, ScaleBar, LayerList) => {
+
+        esriConfig.apiKey = "AAPKc758424f9fd4486d9134df747a57c2fdrq8MzZy9VHqbfPzXNut5SvvoABhJdzImRZOvLbw3qin0_dz9IeNBEOADq9Up7hyG";
+
+        // define the kml feed from inReach
+        const greg = new KMLLayer({
+          // inReach Mini kml feed url
+          url: "https://share.garmin.com/Feed/Share/KisaralikExpedition"
+        });
+
+        const wayPointsLabels = {
+          symbol: {
+            type: "text",
+            color: "#FFFFFF",
+            //haloColor: "#B8B8B8",
+            //haloSize: "2px",
+            font: {
+              size: "12px",
+              family: "Arial",
+              style: "italic",
+              weight: "normal"
+            }
+          },
+
+          labelPlacement: "above-center",
+          labelExpressionInfo: {
+            expression: "$feature.category"
+          }
+        };
+
+        // define float path style
+          const floatPathRenderer = {
+            type: "simple",
+            symbol: {
+              type: "simple-line",
+              style: "short-dot",
+              color: "#FFFFFF",
+              width: "2px"
+            }
+          };
+
+
+        // Define a pop-up for waypoints
+        const popupWayPoints = {
+           "title": "Waypoint",
+           "content": "<b>Sample ID:</b> {SampleID}<br><b>Sample Location:</b> {SampleLoca}"
+         }
+
+        //waypoint feature layer (points)
+        const waypoints = new FeatureLayer({
+        url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Kwethluk_points_to_find_2021/FeatureServer",
+        labelingInfo: [wayPointsLabels],
+        outFields: ["SampleID","SampleLoca"],
+        popupTemplate: popupWayPoints
+          });
+
+        //floatPath feature layer (points)
+        const floatPath = new FeatureLayer({
+        url: "https://services.arcgis.com/tWF28TdwCm3ZaV7m/arcgis/rest/services/Float_Path/FeatureServer",
+          renderer: floatPathRenderer
+          });
+
+        // create a map and add the kml feed to it
+        const map = new Map({
+          basemap: "arcgis-imagery",
+          layers: [greg]
+        });
+
+        // add the map to the MapView
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 9
+        });
+
+        // add additional hosted feature layers
+        //map.add(floatPath);
+        //map.add(waypoints);
+
+        const scalebar = new ScaleBar({
+          view: view
+        });
+        view.ui.add(scalebar, "bottom-left");
+
+
+        // When the layer's promise resolves, animate the view to the layer's fullExtent
+        greg.when(() => {
+          view.goTo(greg.fullExtent);
+        });
+
+        const layerList = new LayerList({
+          view: view,
+          // executes for each ListItem in the LayerList
+          // add code here for zoom to each layer
+          //   listItemCreatedFunction: zoomToLayer(item)
+          });
+        //view.ui.add(layerList, "top-right");
+
+        function zoomToLayer(layer) {
+            return layer.queryExtent().then((response) => {
+              view.goTo(response.extent).catch((error) => {
+                console.error(error);
+              });
+            });
+          }
+
+
+
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>

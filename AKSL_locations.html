@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AK Sportsman's Lodge Locations</title>
+  <meta name="description" content="">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+  <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+  <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+</head>
+
+  <style>
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  #menu {
+    background: #fff;
+    position: absolute;
+    z-index: 1;
+    top: 50px;
+    right: 50px;
+    border-radius: 3px;
+    width: 120px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  #menu a {
+    font-size: 13px;
+    color: #404040;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+
+  #menu a:last-child {
+    border: none;
+  }
+
+  #menu a:hover {
+    background-color: #cce6ff;
+    color: #404040;
+  }
+
+  #menu a.active {
+    background-color: #3887be;
+    color: #ffffff;
+  }
+
+  #menu a.active:hover {
+    background: #3074a4;
+  }
+
+
+  .mapboxgl-popup {
+        padding-bottom: 1px;
+        opacity: 0.8;
+      }
+
+  .mapboxgl-popup-close-button {
+        display: false;
+      }
+
+  .mapboxgl-popup-content {
+        font: 400 14px/22px "Trebuchet MS", Helvetica, sans-serif;
+        padding: 0;
+        width: 250px;
+      }
+
+  .mapboxgl-popup-content-wrapper {
+        padding: 1%;
+      }
+
+
+
+  </style>
+
+  <body>
+
+
+
+  <div id="map"></div>
+
+  <script>
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+
+var map = new mapboxgl.Map({
+  container: 'map', // container id
+  //style: "mapbox://styles/mapbox/satellite-v9", // satellite
+  //style: "mapbox://styles/mapbox/light-v10", // outdoors
+  style: "mapbox://styles/gfiske-whrc/ck8t8pos9039n1imxvdmrp5jl", // custom
+  //style: "mapbox://styles/gfiske-whrc/ck9ocx12y40ve1ip97e4ljkcj",
+  //style: "mapbox://styles/mapbox/dark-v10", // dark
+  //style: 'mapbox://styles/mapbox-map-design/ckhqrf2tz0dt119ny6azh975y',
+  center: [-70.6443115, 41.5494796], // AKSL
+  zoom: 14, // starting zoom
+  pitch: 35,
+  bearing: 15,
+  //attributionControl: false,
+  //showLogoBug: true
+});
+
+
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+// Get the data from a Google Sheet and turn it into GeoJSON
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    url: 'https://docs.google.com/spreadsheets/d/1a17AsmfW-4W2enRRMq6jAQR4FwS_hEClCXTU-Tw98ms/gviz/tq?tqx=out:csv&sheet=Sheet1',
+    dataType: "text",
+    success: function(csvData) {
+      makeGeoJSON(csvData);
+    }
+  });
+});
+
+
+
+function makeGeoJSON(csvData) {
+  csv2geojson.csv2geojson(csvData, {
+    latfield: 'Latitude',
+    lonfield: 'Longitude',
+    delimiter: ','
+  }, function(err, data) {
+    map.on('load', function() {
+
+      map.loadImage(
+        'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+        (error, image) => {
+          if (error) throw error;
+          map.addImage('custom-marker', image);
+        });
+
+      map.addSource('locations', {
+        type: 'geojson',
+        data: data,
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+      });
+
+
+      //Add the the layer to the map
+      map.addLayer({
+        'id': 'clusters',
+        'type': 'circle',
+        //'type': 'symbol',
+        'source': 'locations',
+        'filter': ['has', 'point_count'],
+        //'source': {
+        //  'type': 'geojson',
+        //  'data': data
+        //},
+        //'paint': {
+        //  'circle-radius': 5,
+        //  'circle-color': "white"
+        //},
+        'paint': {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#0033cc',
+            3,
+            '#0033cc',
+            10,
+            '#0033cc'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+           3,
+            30,
+            10,
+            40
+          ],
+          'circle-opacity': 0.6
+        }
+
+      });
+
+      map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'locations',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 14
+        },
+        paint: {
+          "text-color": "#ffffff"
+        }
+      });
+
+      map.addLayer({
+        id: 'unclustered-point',
+        type: 'circle',
+        source: 'locations',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#0033cc',
+          'circle-radius': 9,
+          'circle-stroke-width': 0,
+          'circle-stroke-color': '#fff',
+          'circle-opacity': 0.9
+        }
+      });
+
+      // inspect a cluster on click
+      map.on('click', 'clusters', function(e) {
+        var features = map.queryRenderedFeatures(e.point, {
+          layers: ['clusters']
+        });
+        var clusterId = features[0].properties.cluster_id;
+        map.getSource('locations').getClusterExpansionZoom(
+          clusterId,
+          function(err, zoom) {
+            if (err) return;
+
+            map.easeTo({
+              center: features[0].geometry.coordinates,
+              zoom: zoom
+            });
+          }
+        );
+      });
+
+      // make popup
+      map.on('click', 'unclustered-point', function(e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var name = e.features[0].properties.name;
+        // Ensure that if the map is zoomed out such that
+        // multiple copies of the feature are visible, the
+        // popup appears over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(
+            '<h3>' + name + '</h3>'
+          )
+          .addTo(map);
+      });
+
+
+      map.on('mouseenter', 'clusters', function() {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', 'clusters', function() {
+        map.getCanvas().style.cursor = '';
+      });
+    });
+
+    map.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+    });
+    // add the DEM source as a terrain layer with exaggerated height
+    map.setTerrain({
+      'source': 'mapbox-dem',
+      'exaggeration': 3.5
+    });
+    // add a sky layer that will show when the map is highly pitched
+    map.addLayer({
+      'id': 'sky',
+      'type': 'sky',
+      'paint': {
+        'sky-type': 'atmosphere',
+        'sky-atmosphere-sun': [0.0, 0.0],
+        'sky-atmosphere-sun-intensity': 15
+      }
+    });
+
+
+    var bbox = turf.bbox(data);
+    map.fitBounds(bbox, {
+      padding: 100
+    });
+
+  });
+
+
+
+}
+
+  </script>
+
+  </body>
+</html>
