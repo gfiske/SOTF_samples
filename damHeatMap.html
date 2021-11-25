@@ -35,7 +35,7 @@ const map = new mapboxgl.Map({
 map.on('load', () => {
   map.addSource('dams', {
     type: 'geojson',
-    data: 'https://github.com/gfiske/SOTF_samples/blob/master/US_Dams.geojson'
+    data: './US_Dams.geojson'
   });
   map.addLayer(
   {
