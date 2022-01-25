@@ -186,11 +186,11 @@
                 'circle-stroke-color': '#ffffe6',
                 'circle-opacity': 0.5,
                 "circle-radius": {
-                  property: 'uniqueID',
+                  property: 'Temp',
                   stops: [
-                    [0, 5],
-                    [50, 150],
-                    [200, 500],
+                    [8, 8],
+                    [15, 15],
+                    [20, 20],
                   ]
                 }
               }
@@ -241,8 +241,9 @@
               map.getCanvas().style.cursor = 'pointer';
 
               var coordinates = e.features[0].geometry.coordinates.slice();
-              var SiteName = e.features[0].properties.Vial;
-              var AverageNitrate = e.features[0].properties.MEF_Length;
+              var SiteName = e.features[0].properties.Tag__;
+              var Ambient = e.features[0].properties.AmbientLig;
+              var Temp = e.features[0].properties.Temp;
 
               // Ensure that if the map is zoomed out such that
               // multiple copies of the feature are visible, the
@@ -253,7 +254,7 @@
 
               // Populate the popup and set its coordinates based on the feature found
               popup.setLngLat(coordinates).setHTML(
-                  '<h3>' + SiteName + '</h3>' + '<h4>' + '<b>' + 'MEF_Length: ' + AverageNitrate + ' ' + '</b>' + '</h4>'
+                  '<h3>' + SiteName + '</h3>' + '<h4>' + 'Ambient Light: ' + Ambient + ' ' + '<br>' + 'Temperature(C): ' + Temp + ' ' + '</br>' + '</h4>'
                 )
                 .addTo(map);
             });
