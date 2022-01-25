@@ -188,9 +188,9 @@
                 "circle-radius": {
                   property: 'Temp',
                   stops: [
-                    [8, 8],
-                    [15, 15],
-                    [20, 20],
+                    [12, 5],
+                    [16, 25],
+                    [20, 65],
                   ]
                 }
               }
@@ -199,6 +199,13 @@
 
             });
             //console.log(data)
+
+            // Center the map on the coordinates of any clicked circle from the 'circle' layer.
+            map.on('click', 'csvData', (e) => {
+              map.flyTo({
+                center: e.features[0].geometry.coordinates
+              });
+            });
 
             // Add fog
             map.setFog({
