@@ -128,14 +128,14 @@
   $(document).ready(function() {
     $.ajax({
       type: "GET",
-      url: 'https://docs.google.com/spreadsheets/d/1Il_HieQWzSNfc4I_gHyYLam4xb9pKdVO74dSq3LX-k4/gviz/tq?tqx=out:csv&sheet=Sheet2',
+      url: 'https://docs.google.com/spreadsheets/d/2PACX-1vT90t_qy86EcssU3uKPtxwE95RpJlNXILDKfY01TQmJLiXCDBZ1orbNutqn9JlQoLBVFzqUMOLee6lU/gviz/tq?tqx=out:csv&sheet=Sheet2',
       dataType: "text",
       success: function(csvData) {
         makeGeoJSON(csvData);
       }
     });
   });
-
+  
   function makeGeoJSON(csvData) {
     //console.log(csvData)
     csv2geojson.csv2geojson(csvData, {
