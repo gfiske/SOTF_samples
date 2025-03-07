@@ -8,8 +8,8 @@
     <meta name="description" content="">
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
     <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
 
   </head>
@@ -110,7 +110,7 @@
     </div>
 
     <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2s4aXdpYWdnMGFwejNncW9ueTl1ODA5ZCJ9.cdEhouG-8PZe9n8fXPmYlA';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Zpc2tlLXdocmMiLCJhIjoiY2tua285cmN4MGIyMzJ2bjFlZDJsb3psbiJ9.jqt3QQFrvup-61d2Bp6oTQ';
   var map = new mapboxgl.Map({
     container: 'map', // container id
     //style: "mapbox://styles/mapbox/satellite-v9", // satellite
@@ -129,7 +129,9 @@
     $.ajax({
       type: "GET",
       //url: 'https://docs.google.com/spreadsheets/d/1Il_HieQWzSNfc4I_gHyYLam4xb9pKdVO74dSq3LX-k4/gviz/tq?tqx=out:csv&sheet=Sheet2',
-      url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT90t_qy86EcssU3uKPtxwE95RpJlNXILDKfY01TQmJLiXCDBZ1orbNutqn9JlQoLBVFzqUMOLee6lU/pub?gid=0&single=true&output=csv',
+      //url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT90t_qy86EcssU3uKPtxwE95RpJlNXILDKfY01TQmJLiXCDBZ1orbNutqn9JlQoLBVFzqUMOLee6lU/pub?gid=0&single=true&output=csv',
+	  //url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS4pk3uAMCnfdAE7EPNTWBNOfBRHIRJBY9bfiavjJ8WcvM6hcrriMysl7ufOUy54KOIscw570iflDvC/pub?gid=0&single=true&output=csv',
+	  url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMveG9uoUoeavV5CN_t_jFJxts6lZRSTe6ASqtuzjcuYrgd5ZbfvHxghupbO-hwKKrm-xeEF5BXjZe/pub?gid=0&single=true&output=csv',
       dataType: "text",
       success: function(csvData) {
         makeGeoJSON(csvData);
